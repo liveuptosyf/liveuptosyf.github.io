@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="再试一下">
+<meta name="description" content="实现基于链表的插入排序算法，即由无序链表利用插入算法生成有序链表 #include &amp;lt;iostream&amp;gt; #include &amp;lt;ctime&amp;gt; #include &amp;lt;cstdlib&amp;gt; using namespace std; template &amp;lt;typename T&amp;gt; class node  &#x2F;&#x2F;建立单链表类 { public: T nodeValue;">
 <meta name="keywords" content="数据结构">
 <meta property="og:type" content="article">
 <meta property="og:title" content="链表">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;27&#x2F;%E9%93%BE%E8%A1%A8&#x2F;index.html">
 <meta property="og:site_name" content="CySyf">
-<meta property="og:description" content="再试一下">
+<meta property="og:description" content="实现基于链表的插入排序算法，即由无序链表利用插入算法生成有序链表 #include &amp;lt;iostream&amp;gt; #include &amp;lt;ctime&amp;gt; #include &amp;lt;cstdlib&amp;gt; using namespace std; template &amp;lt;typename T&amp;gt; class node  &#x2F;&#x2F;建立单链表类 { public: T nodeValue;">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;27&#x2F;%E9%93%BE%E8%A1%A8&#x2F;%E5%8F%AF%E7%88%B1.jpeg">
-<meta property="og:updated_time" content="2019-10-27T14:32:46.609Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;27&#x2F;%E9%93%BE%E8%A1%A8&#x2F;%E9%93%BE%E8%A1%A8.png">
+<meta property="og:updated_time" content="2019-10-29T08:20:45.377Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;27&#x2F;%E9%93%BE%E8%A1%A8&#x2F;%E5%8F%AF%E7%88%B1.jpeg">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;27&#x2F;%E9%93%BE%E8%A1%A8&#x2F;%E9%93%BE%E8%A1%A8.png">
 
 
 
@@ -330,7 +330,71 @@
       
 
       
-        <p>再试一下<br><img src="/2019/10/27/%E9%93%BE%E8%A1%A8/%E5%8F%AF%E7%88%B1.jpeg" alt="链表"></p>
+        <p>实现基于链表的插入排序算法，即由无序链表利用插入算法生成有序链表</p>
+<pre><code class="bash"><span class="comment">#include &lt;iostream&gt;</span>
+<span class="comment">#include &lt;ctime&gt;</span>
+<span class="comment">#include &lt;cstdlib&gt;</span>
+using namespace std;
+template &lt;typename T&gt;
+class node  //建立单链表类
+{
+public:
+T nodeValue;
+node&lt;T&gt;*next;
+node():next(NULL){}
+node(constT&amp;item,node&lt;T&gt;*nextNode=NULL)
+:nodeValue(item),next(nextNode){}
+};
+node&lt;int&gt;*insert(node&lt;int&gt;*first) //插入排序算法函数，基于原链表进行插入排序操作 
+{
+<span class="keyword">if</span> (first == NULL)  <span class="built_in">return</span> first;
+node&lt;int&gt;*head = new node&lt;int&gt;();//新建一个head指针，指向链表头节点的前面，即作为另一个新设的头节点（但他没有实际的值，只是便于寻找真正的头节点） 
+head-&gt;next = first;
+node&lt;int&gt;*cur = first,*next,*p,*q;
+<span class="keyword">while</span> (cur-&gt;next) //当cur指针的下一个元素不为空即还没遍历完所有的元素时进入循环 
+{
+next = cur-&gt;next; //新建next指针指向cur的下一个节点，代表将要进行插入操作的元素 
+p = head;   //新建p指针指向head，指向已完成排序部分的元素 
+<span class="keyword">while</span> (p-&gt;next != next &amp;&amp; p-&gt;next-&gt;nodeValue &lt; next-&gt;nodeValue)
+p = p-&gt;next; //如果p-&gt;next没有追上next指针并且已排序的元素值小于next的值，p就不断向后移动 
+<span class="keyword">if</span> (p-&gt;next != next) //如果在已排序部分链表中找到了大于插入元素的元素 
+{                               
+q = next-&gt;next;  //进行插入操作，新建q指针记住next元素的下一个节点的地址 
+next-&gt;next = p-&gt;next;
+p-&gt;next = next;
+cur-&gt;next = q;
+}
+<span class="keyword">else</span> {      //若找不到比插入元素大的节点，说明已经是升序了，cur指针向后移动 
+cur = next;
+}
+}
+<span class="built_in">return</span> head-&gt;next; //返回插入排序之后的头节点 
+} 
+int main()
+{
+node&lt;int&gt;*first=NULL;      
+srand((int)time(NULL)); //利用srand()函数随机生成链表的值 
+<span class="keyword">for</span>(int i=0;i&lt;15;i++)
+{
+first=new node&lt;int&gt;(rand(),first);
+}
+node&lt;int&gt;*n1=first;    //新建n1指针指向链表头节点，保证first始终指向头节点 
+cout&lt;&lt;<span class="string">"排序前的链表为："</span>&lt;&lt;endl;  //输出原来的链表 
+<span class="keyword">while</span>(n1!=NULL)
+{
+cout&lt;&lt;n1-&gt;nodeValue&lt;&lt;<span class="string">"   "</span>;
+n1=n1-&gt;next;
+}
+cout&lt;&lt;endl;
+node&lt;int&gt;*nodeNow=insert(first);  //调用插入排序函数并且新建nodeNow指针指向返回的头节点 
+cout&lt;&lt;endl&lt;&lt;<span class="string">"排序后的链表为："</span>&lt;&lt;endl;
+<span class="keyword">while</span>(nodeNow!=NULL)   //输出排序后的链表 
+{
+cout&lt;&lt;nodeNow-&gt;nodeValue&lt;&lt;<span class="string">"   "</span>;
+nodeNow=nodeNow-&gt;next;
+}
+}</code></pre>
+<h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><p><img src="/2019/10/27/%E9%93%BE%E8%A1%A8/%E9%93%BE%E8%A1%A8.png" alt="链表"></p>
 
       
     </div>
@@ -421,8 +485,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -490,6 +563,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行结果"><span class="nav-number">1.</span> <span class="nav-text">运行结果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
